@@ -4,8 +4,8 @@
 	bare = false
 	logallrefupdates = true
 [remote "origin"]
-    url = https://gitee.com/larryw3i/CrazyInternetSpeedMeter.git
-	url = https://github.com/larryw3i/CrazyInternetSpeedMeter.git
+    url = git@gitee.com:larryw3i/CrazyInternetSpeedMeter.git
+	url = git@github.com:larryw3i/CrazyInternetSpeedMeter.git
 	fetch = +refs/heads/*:refs/remotes/origin/*
 [branch "master"]
 	remote = origin
