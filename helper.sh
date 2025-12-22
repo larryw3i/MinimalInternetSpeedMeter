@@ -79,11 +79,15 @@ debug_extension() {
     copy_site_extension
     install_extension
     echo "Start debugging. . ."
-    dbus-run-session \
-        -- \
-        gnome-shell \
-        --nested \
-        --wayland
+
+    export G_MESSAGES_DEBUG=all
+    export SHELL_DEBUG=all
+
+    if [[ "$(gnome-shell --version | awk '{print int($3)}')" -ge 49 ]]; then
+        dbus-run-session gnome-shell --devkit --wayland
+    else
+        dbus-run-session gnome-shell --nested --wayland
+    fi
     restore_site_extension
 }
 
@@ -160,12 +164,30 @@ pack_extension() {
 }
 
 fmt_code() {
-    npx prettier --write --print-width 80 .
-    if [[ -x $(which shfmt) ]];
-    then
-        shfmt -i 4 -w -f .
-    fi
+    run_prettier() {
+        export PATH=${HOME}/.npm-global/bin:$PATH
+        if [[ "$(which prettier)" != *"/bin/prettier" ]]; then
+            echo "Trying to install prettier ..."
+            mkdir -p ${HOME}/.npm-global
+            npm config set prefix "${HOME}/.npm-global"
+            export PATH=${HOME}/.npm-global/bin:$PATH
+            npm i -g prettier
+        fi
+        prettier --write --print-width 80 ${PROJECT_DIR}
+    }
+    
+    run_shfmt(){
+        if [[ -x $(which shfmt) ]];
+        then
+            shfmt -i 4 -w -f ${PROJECT_DIR}
+        else
+            echo "Trying to install `shfmt` ..."
+            sudo apt-get install shfmt
+        fi
+    }
 
+    run_prettier
+    run_shfmt
 }
 
 # Let's start
