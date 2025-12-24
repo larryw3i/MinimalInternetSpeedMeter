@@ -17,10 +17,6 @@ import {
 } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js'
 
 export default class CrazyInternetSpeedMeterPreferences extends ExtensionPreferences {
-    netSpeedCharList = new Gtk.StringList({
-        strings: ['F', 'T', '~', '*', '#', '^'],
-    })
-
     getPetNameWithSpace_T() {
         let petName0 = _('Crazy Internet Speed Meter')
         let petName1 = _('Internet Speed Meter')
@@ -44,70 +40,6 @@ export default class CrazyInternetSpeedMeterPreferences extends ExtensionPrefere
             ),
         })
         page.add(group)
-
-        /*
-         * Normally, we design this extension for checking the network
-         * traffic speed. For a general user, 1 decimal point is already
-         * sufficient, and it should occupy the space as less as possible,
-         * third, it's best not to distract user, it means we do NOT make
-         * the position of the text change, otherwise, the position of some
-         * icons will also change.
-         *
-         */
-
-        const getSavedNetSpeedCharIndex = () => {
-            let savedNetSpeedChar =
-                window._settings.get_string('net-speed-char')
-            for (let i = 0; i < this.netSpeedCharList.get_n_items(); i++) {
-                if (this.netSpeedCharList.get_string(i) === savedNetSpeedChar) {
-                    return i
-                }
-            }
-            return 0
-        }
-        const netSpeedCharsRow = new Adw.ComboRow({
-            title: _('Internet speed char'),
-            subtitle: _('Select the icon to display next to the text.'),
-            model: this.netSpeedCharList,
-            selected: getSavedNetSpeedCharIndex(),
-        })
-        group.add(netSpeedCharsRow)
-        netSpeedCharsRow.connect('notify::selected', (widget) => {
-            window._settings.set_string(
-                'net-speed-char',
-                this.netSpeedCharList.get_string(widget.selected)
-            )
-        })
-        netSpeedCharsRow.set_tooltip_text(
-            _(
-                'To fix the size of this extension, ' +
-                    'only some Mono characters are available here. ' +
-                    '(Changing the size will distract your attention)'
-            )
-        )
-
-        const showRightCharRow = new Adw.SwitchRow({
-            title: _('Show right char'),
-            subtitle: _('Whether to show speed text with right char.'),
-        })
-        group.add(showRightCharRow)
-        window._settings.bind(
-            'show-right-char',
-            showRightCharRow,
-            'active',
-            Gio.SettingsBindFlags.DEFAULT
-        )
-        const showLeftCharRow = new Adw.SwitchRow({
-            title: _('Show left char'),
-            subtitle: _('Whether to show speed text with left char.'),
-        })
-        group.add(showLeftCharRow)
-        window._settings.bind(
-            'show-left-char',
-            showLeftCharRow,
-            'active',
-            Gio.SettingsBindFlags.DEFAULT
-        )
 
         const showBytePerSecondTextRow = new Adw.SwitchRow({
             title: _('Show "B/s" text'),

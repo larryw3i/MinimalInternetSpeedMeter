@@ -43,14 +43,6 @@ export default class CrazyInternetSpeedMeter extends Extension {
     _indicator = null
     _settings = null
 
-    getShowRightChar() {
-        return this.getSettings().get_boolean('show-right-char')
-    }
-
-    getShowLeftChar() {
-        return this.getSettings().get_boolean('show-left-char')
-    }
-
     getShowBytePerSecondText() {
         return this.getSettings().get_boolean('show-byte-per-second-text')
     }
@@ -63,15 +55,8 @@ export default class CrazyInternetSpeedMeter extends Extension {
         return this.getSettings().get_boolean('show-border')
     }
 
-    getNetSpeedChar() {
-        return this.getSettings().get_string('net-speed-char')
-    }
-
     getNetSpeedText0() {
-        let char_count = 11
-        if (!this.getShowRightChar()) {
-            char_count = char_count - 1
-        }
+        let char_count = 10
         if (!this.getShowBytePerSecondText()) {
             char_count = char_count - 3
         }
@@ -138,25 +123,7 @@ export default class CrazyInternetSpeedMeter extends Extension {
                 }
             )
 
-            this._settings.connect('changed::show-left-char', () => {
-                if (this.getShowLeftChar()) {
-                    this._settings.set_boolean('show-right-char', false)
-                }
-                this.refreshSpeed()
-            })
-
-            this._settings.connect('changed::show-right-char', () => {
-                if (this.getShowRightChar()) {
-                    this._settings.set_boolean('show-left-char', false)
-                }
-                this.refreshSpeed()
-            })
-
             this._settings.connect('changed::show-byte-per-second-text', () => {
-                this.refreshSpeed()
-            })
-
-            this._settings.connect('changed::net-speed-char', () => {
                 this.refreshSpeed()
             })
 
@@ -269,23 +236,13 @@ export default class CrazyInternetSpeedMeter extends Extension {
         let speed_float = split_speeds[1]
 
         if (speed_int.length < 4) {
-            if (this.getShowLeftChar()) {
-                speed_int =
-                    this.getNetSpeedChar() +
-                    ' '.repeat(3 - speed_int.length) +
-                    speed_int
-            } else {
-                speed_int = ' '.repeat(4 - speed_int.length) + speed_int
-            }
+            speed_int = ' '.repeat(4 - speed_int.length) + speed_int
         }
         speed = speed_int + '.' + speed_float
         if (!this.getShowBytePerSecondText()) {
             speed_unit = speed_unit.slice(0, -3)
         }
         speed = speed + speed_unit
-        if (this.getShowRightChar()) {
-            speed = speed + this.getNetSpeedChar()
-        }
 
         return speed
     }

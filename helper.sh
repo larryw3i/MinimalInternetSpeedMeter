@@ -163,7 +163,7 @@ pack_extension() {
     echo "Finish packing."
 }
 
-fmt_code() {
+format_code() {
     run_prettier() {
         export PATH=${HOME}/.npm-global/bin:$PATH
         if [[ "$(which prettier)" != *"/bin/prettier" ]]; then
