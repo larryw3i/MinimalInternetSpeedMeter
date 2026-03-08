@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-  <schema id="org.gnome.shell.extensions.CrazyInternetSpeedMeter" 
-    path="/org/gnome/shell/extensions/CrazyInternetSpeedMeter/">
+  <schema id="org.gnome.shell.extensions.MinimalInternetSpeedMeter" 
+    path="/org/gnome/shell/extensions/MinimalInternetSpeedMeter/">
     <key name="net-speed-char" type="s">
       <default>'\u21c5'</default>
     </key>

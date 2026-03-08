@@ -2,8 +2,8 @@
     "name": "Minimal Internet Speed Meter",
     "description": "Simple and minimal internet speed meter extension for the Gnome Shell",
     "uuid": "MinimalInternetSpeedMeter@larryw3i_at_yeah.net",
-    "url": "https://gitlab.gnome.org/larryw3i/Minimal1nternetSpeedMeter.git",
-    "version-name": "20251224.133514",
+    "url": "https://gitlab.gnome.org/larryw3i/MinimalInternetSpeedMeter",
+    "version-name": "20260308.065951",
     "shell-version": ["48", "49", "50"],
     "gettext-domain": "MinimalInternetSpeedMeter@larryw3i_at_yeah.net",
     "settings-schema": "org.gnome.shell.extensions.MinimalInternetSpeedMeter"
