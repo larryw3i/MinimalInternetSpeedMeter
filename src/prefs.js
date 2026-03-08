@@ -1,5 +1,5 @@
 /*
- * Name: Crazy Internet Speed Meter
+ * Name: Minimal Internet Speed Meter
  * Description: A simple and minimal internet speed meter extension for Gnome
  * Shell.
  * Author: larryw3i
@@ -16,9 +16,9 @@ import {
     gettext as _,
 } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js'
 
-export default class CrazyInternetSpeedMeterPreferences extends ExtensionPreferences {
+export default class MinimalInternetSpeedMeterPreferences extends ExtensionPreferences {
     getPetNameWithSpace_T() {
-        let petName0 = _('Crazy Internet Speed Meter')
+        let petName0 = _('Minimal Internet Speed Meter')
         let petName1 = _('Internet Speed Meter')
         let petName = petName1
         return petName

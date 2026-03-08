@@ -1,5 +1,5 @@
 /*
- * Name: Crazy Internet Speed Meter
+ * Name: Minimal Internet Speed Meter
  * Description: A simple and minimal internet speed meter extension for Gnome
  * Shell.
  * Author: larryw3i
@@ -29,7 +29,7 @@ import {
 import * as Main from 'resource:///org/gnome/shell/ui/main.js'
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js'
 
-export default class CrazyInternetSpeedMeter extends Extension {
+export default class MinimalInternetSpeedMeter extends Extension {
     unitBase = 1024.0 // 1 GB == 1024MB or 1MB == 1024KB etc.
     units = ['KB/s', 'MB/s', 'GB/s', 'TB/s', 'PB/s', 'EB/s']
 
