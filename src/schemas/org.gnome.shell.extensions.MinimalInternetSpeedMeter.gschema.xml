@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-  <schema id="org.gnome.shell.extensions.MinimalInternetSpeedMeter" 
-    path="/org/gnome/shell/extensions/MinimalInternetSpeedMeter/">
-    <key name="net-speed-char" type="s">
-      <default>'\u21c5'</default>
-    </key>
-   <key name="show-right-char" type="b">
-      <default>false</default>
-    </key>
-   <key name="show-left-char" type="b">
-      <default>false</default>
-    </key>
+  <schema id="org.gnome.shell.extensions.MinimalInternetSpeedMeter" path="/org/gnome/shell/extensions/MinimalInternetSpeedMeter/">
     <key name="show-byte-per-second-text" type="b">
       <default>false</default>
-    </key>     
+    </key>
     <key name="refresh-threshold-in-second" type="i">
       <default>2</default>
     </key>

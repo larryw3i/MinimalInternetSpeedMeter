@@ -26,6 +26,7 @@ MAINTAINER_EMAIL="larryw3i_at_yeah.net"
 MAINTAINER_NAME="larryw3i"
 EXTENSION_REPO_URL="https://github.com/larryw3i/MinimalInternetSpeedMeter https://github.com/larryw3i/MinimalInternetSpeedMeter"
 POT_FILE="${PWD}/po/${EXTENSION_FULL_NAME}.pot"
+GSCHEMA_PATH="${SRC_DIR}/schemas/org.gnome.shell.extensions.MinimalInternetSpeedMeter.gschema.xml"
 DEFAULT_PACK_NAME="${EXTENSION_FULL_NAME}.shell-extension.zip"
 DEFAULT_PACK_FILE="${OUT_DIR}/${DEFAULT_PACK_NAME}"
 EXTENSIONS_DIR="${HOME}/.local/share/gnome-shell/extensions"
@@ -186,8 +187,17 @@ format_code() {
         fi
     }
 
+    run_xmllint(){
+        if [[ -x $(which xmllint) ]];
+        then
+            echo "Formatting ${GSCHEMA_PATH} ..."
+            xmllint --output ${GSCHEMA_PATH} --format ${GSCHEMA_PATH}
+        fi
+    }
+
     run_prettier
     run_shfmt
+    run_xmllint
 }
 
 # Let's start

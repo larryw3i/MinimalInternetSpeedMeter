@@ -85,8 +85,6 @@ export default class MinimalInternetSpeedMeter extends Extension {
                 break
             }
             if (
-                // Refer to https://github.com/AlShakib/InternetSpeedMeter/\
-                // blob/master/src/extension.js
                 !column[0].match(/^lo$/) &&
                 !column[0].match(/^br[0-9]+/) &&
                 !column[0].match(/^tun[0-9]+/) &&
@@ -116,22 +114,28 @@ export default class MinimalInternetSpeedMeter extends Extension {
         if (!this._settings) {
             this._settings = super.getSettings()
             let netSpeedLabel = this.getNetSpeedLabel()
-            this._settings.connect(
+            this._refreshThresholdInSecondHandlerId = this._settings.connect(
                 'changed::refresh-threshold-in-second',
                 () => {
                     this.bindUpdateNetSpeed()
                 }
             )
 
-            this._settings.connect('changed::show-byte-per-second-text', () => {
-                this.refreshSpeed()
-            })
+            this._showBytePerSecondHandlerId = this._settings.connect(
+                'changed::show-byte-per-second-text',
+                () => {
+                    this.refreshSpeed()
+                }
+            )
 
-            this._settings.connect('changed::show-border', () => {
-                netSpeedLabel.set_style_class_name(
-                    this.getNetSpeedLabelStyleClassName()
-                )
-            })
+            this._showBorderHandlerId = this._settings.connect(
+                'changed::show-border',
+                () => {
+                    netSpeedLabel.set_style_class_name(
+                        this.getNetSpeedLabelStyleClassName()
+                    )
+                }
+            )
         }
         return this._settings
     }
@@ -296,6 +300,18 @@ export default class MinimalInternetSpeedMeter extends Extension {
 
     disable() {
         this.unbindUpdateNetSpeed()
+        if (this._refreshThresholdInSecondHandlerId) {
+            global.settings.disconnect(this._refreshThresholdInSecondHandlerId)
+            this._refreshThresholdInSecondHandlerId = null
+        }
+        if (this._showBytePerSecondHandlerId) {
+            global.settings.disconnect(this._showBytePerSecondHandlerId)
+            this._showBytePerSecondHandlerId = null
+        }
+        if (this._showBorderHandlerId) {
+            global.settings.disconnect(this._showBorderHandlerId)
+            this._showBorderHandlerId = null
+        }
     }
 }
 
