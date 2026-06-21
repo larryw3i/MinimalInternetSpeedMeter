@@ -16,21 +16,21 @@ Visit [Minimal Internet Speed Meter - GNOME Shell Extensions](https://extensions
 
 1. Clone this repository
 
-    ```bash
-    git clone https://gitlab.gnome.org/larryw3i/MinimalInternetSpeedMeter.git
-    ```
+   ```bash
+   git clone https://gitlab.gnome.org/larryw3i/MinimalInternetSpeedMeter.git
+   ```
 
 2. Change current directory to repository
 
-    ```bash
-    cd MinimalInternetSpeedMeter
-    ```
+   ```bash
+   cd MinimalInternetSpeedMeter
+   ```
 
 3. Now run
 
-    ```bash
-    chmod +x ./helper.sh && ./helper.sh -i
-    ```
+   ```bash
+   chmod +x ./helper.sh && ./helper.sh -i
+   ```
 
 4. If you are using Wayland, log out and then log in. Otherwise press `ALT + F2` and then type `r` and press `Enter`.
 

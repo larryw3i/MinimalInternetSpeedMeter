@@ -15,12 +15,12 @@
  */
 
 .netSpeedLabel {
-    text-align: right;
-    font-family: monospace;
-    color: white;
+  text-align: right;
+  font-family: monospace;
+  color: white;
 }
 
 .withBorder {
-    border: 1px solid white;
-    border-radius: 10px;
+  border: 1px solid white;
+  border-radius: 10px;
 }
