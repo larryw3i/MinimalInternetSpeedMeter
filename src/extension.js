@@ -42,6 +42,10 @@ export default class MinimalInternetSpeedMeter extends Extension {
   _indicator = null
   _settings = null
 
+  constructor(metadata) {
+    super(metadata)
+  }
+
   get showBytePerSecondText() {
     return this.settings.get_boolean('show-byte-per-second-text')
   }

@@ -17,15 +17,14 @@ import {
 } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js'
 
 export default class MinimalInternetSpeedMeterPreferences extends ExtensionPreferences {
-  getPetNameWithSpace_T() {
+  get petNameWithSpace_T() {
     let petName0 = _('Minimal Internet Speed Meter')
-    let petName1 = _('Internet Speed Meter')
-    let petName = petName1
-    return petName
+    // let petName1 = _('Internet Speed Meter')
+    return petName0
   }
 
   fillPreferencesWindow(window) {
-    window.set_title(this.getPetNameWithSpace_T())
+    window.set_title(this.petNameWithSpace_T)
     window._settings = this.getSettings()
     const page = new Adw.PreferencesPage({
       title: _('General'),
@@ -36,7 +35,7 @@ export default class MinimalInternetSpeedMeterPreferences extends ExtensionPrefe
     const group = new Adw.PreferencesGroup({
       title: _('Appearance'),
       description: _('Configure the appearance of %s.').format(
-        this.getPetNameWithSpace_T()
+        this.petNameWithSpace_T
       ),
     })
     page.add(group)
