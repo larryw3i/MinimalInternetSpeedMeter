@@ -81,9 +81,7 @@ debug_extension() {
     install_extension
     echo "Start debugging. . ."
 
-    export G_MESSAGES_DEBUG=all
-    export SHELL_DEBUG=all
-
+    export SHELL_DEBUG=backtrace-warnings
     if [[ "$(gnome-shell --version | awk '{print int($3)}')" -ge 49 ]]; then
         dbus-run-session gnome-shell --devkit --wayland
     else

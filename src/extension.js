@@ -37,7 +37,6 @@ export default class MinimalInternetSpeedMeter extends Extension {
   prevUploadBytes = 0
   prevDownloadBytes = 0
   prevSpeed = 0
-  container = null
   timeoutId = 0
   _netSpeedLabel = null
   _indicator = null
@@ -65,12 +64,12 @@ export default class MinimalInternetSpeedMeter extends Extension {
     return defaultNetSpeedText
   }
 
-  get speedLabelStyleClassName() {
-    let name = 'netSpeedLabel'
+  get netSpeedLabelStyleClassName() {
+    let className = 'netSpeedLabel'
     if (this.showBorder) {
-      name += ' withBorder'
+      className += ' withBorder'
     }
-    return name
+    return className
   }
 
   // Read total download and upload bytes from /proc/net/dev file
@@ -96,8 +95,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
         let download = parseInt(column[1])
         let upload = parseInt(column[9])
         if (!isNaN(download) && !isNaN(upload)) {
-          d
-          ownloadBytes += download
+          downloadBytes += download
           uploadBytes += upload
         }
       }
@@ -112,21 +110,21 @@ export default class MinimalInternetSpeedMeter extends Extension {
   get settings() {
     if (!this._settings) {
       this._settings = super.getSettings()
-      this._refreshThresholdInSecondHandlerId = this._settings.connectObject(
+      this.refreshThresholdInSecondHandlerId = this._settings.connectObject(
         'changed::refresh-threshold-in-second',
         () => {
           this.bindUpdateNetSpeed()
         }
       )
 
-      this._showBytePerSecondHandlerId = this._settings.connectObject(
+      this.showBytePerSecondHandlerId = this._settings.connectObject(
         'changed::show-byte-per-second-text',
         () => {
           this.refreshSpeed()
         }
       )
 
-      this._showBorderHandlerId = this._settings.connectObject(
+      this.showBorderHandlerId = this._settings.connectObject(
         'changed::show-border',
         () => {
           this.netSpeedLabel.set_style_class_name(
@@ -229,14 +227,13 @@ export default class MinimalInternetSpeedMeter extends Extension {
 
   // Format bytes to readable string
   getFormattedSpeed(speed) {
-    // if this.settings
-    let i = 0
+    let unit_index = 0
     while (speed >= this.unitBase) {
       // Convert speed to KB, MB, GB or TB
       speed /= this.unitBase
-      ++i
+      ++unit_index
     }
-    let speed_unit = this.units[i]
+    let speed_unit = this.units[unit_index]
 
     return this._getFormattedSpeed(speed, speed_unit)
   }
@@ -253,8 +250,8 @@ export default class MinimalInternetSpeedMeter extends Extension {
     )
   }
 
-  delHandlerIds() {
-    if (this._refreshThresholdInSecondHandlerId) {
+  deleteHandlerIds() {
+    if (this.refreshThresholdInSecondHandlerId) {
       global.settings.disconnectObject(this.refreshThresholdInSecondHandlerId)
       this.refreshThresholdInSecondHandlerId = null
     }
@@ -262,7 +259,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
       global.settings.disconnectObject(this.showBytePerSecondHandlerId)
       this.showBytePerSecondHandlerId = null
     }
-    if (this._showBorderHandlerId) {
+    if (this.showBorderHandlerId) {
       global.settings.disconnectObject(this.showBorderHandlerId)
       this.showBorderHandlerId = null
     }
@@ -285,7 +282,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
       this._indicator = null
     }
 
-    this.delHandlerIds()
+    this.deleteHandlerIds()
 
     if (this._settings) {
       this._settings = null
