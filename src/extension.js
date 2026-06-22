@@ -43,21 +43,21 @@ export default class MinimalInternetSpeedMeter extends Extension {
   _indicator = null
   _settings = null
 
-  getShowBytePerSecondText() {
-    return this.getSettings().get_boolean('show-byte-per-second-text')
+  get showBytePerSecondText() {
+    return this.settings.get_boolean('show-byte-per-second-text')
   }
 
-  getRefreshThresholdInSecond() {
-    return this.getSettings().get_int('refresh-threshold-in-second')
+  get refreshThresholdInSecond() {
+    return this.settings.get_int('refresh-threshold-in-second')
   }
 
-  getShowBorder() {
-    return this.getSettings().get_boolean('show-border')
+  get showBorder() {
+    return this.settings.get_boolean('show-border')
   }
 
-  getNetSpeedText0() {
+  get __netSpeedText() {
     let char_count = 10
-    if (!this.getShowBytePerSecondText()) {
+    if (!this.showBytePerSecondText) {
       char_count = char_count - 3
     }
     let defaultNetSpeedText = ' '.repeat(char_count)
@@ -65,16 +65,16 @@ export default class MinimalInternetSpeedMeter extends Extension {
     return defaultNetSpeedText
   }
 
-  getNetSpeedLabelStyleClassName() {
+  get speedLabelStyleClassName() {
     let name = 'netSpeedLabel'
-    if (this.getShowBorder()) {
+    if (this.showBorder) {
       name += ' withBorder'
     }
     return name
   }
 
   // Read total download and upload bytes from /proc/net/dev file
-  getNetBytes() {
+  get netBytes() {
     let lines = Shell.get_file_contents_utf8_sync('/proc/net/dev').split('\n')
     let downloadBytes = 0
     let uploadBytes = 0
@@ -96,7 +96,8 @@ export default class MinimalInternetSpeedMeter extends Extension {
         let download = parseInt(column[1])
         let upload = parseInt(column[9])
         if (!isNaN(download) && !isNaN(upload)) {
-          downloadBytes += download
+          d
+          ownloadBytes += download
           uploadBytes += upload
         }
       }
@@ -105,33 +106,31 @@ export default class MinimalInternetSpeedMeter extends Extension {
   }
 
   refreshSpeed() {
-    let netSpeedLabel = this.getNetSpeedLabel()
-    netSpeedLabel.set_text(this.getFormattedSpeed(this.prevSpeed))
+    this.netSpeedLabel.set_text(this.getFormattedSpeed(this.prevSpeed))
   }
 
-  getSettings() {
+  get settings() {
     if (!this._settings) {
       this._settings = super.getSettings()
-      let netSpeedLabel = this.getNetSpeedLabel()
-      this._refreshThresholdInSecondHandlerId = this._settings.connect(
+      this._refreshThresholdInSecondHandlerId = this._settings.connectObject(
         'changed::refresh-threshold-in-second',
         () => {
           this.bindUpdateNetSpeed()
         }
       )
 
-      this._showBytePerSecondHandlerId = this._settings.connect(
+      this._showBytePerSecondHandlerId = this._settings.connectObject(
         'changed::show-byte-per-second-text',
         () => {
           this.refreshSpeed()
         }
       )
 
-      this._showBorderHandlerId = this._settings.connect(
+      this._showBorderHandlerId = this._settings.connectObject(
         'changed::show-border',
         () => {
-          netSpeedLabel.set_style_class_name(
-            this.getNetSpeedLabelStyleClassName()
+          this.netSpeedLabel.set_style_class_name(
+            this.netSpeedLabelStyleClassName
           )
         }
       )
@@ -139,27 +138,26 @@ export default class MinimalInternetSpeedMeter extends Extension {
     return this._settings
   }
 
-  getNetSpeedLabel() {
+  get netSpeedLabel() {
     if (!this._netSpeedLabel) {
-      // Create a panel button
-      let indicator = this.getIndicator()
-
       this._netSpeedLabel = new St.Label({
-        text: this.getNetSpeedText0(),
-        style_class: this.getNetSpeedLabelStyleClassName(),
+        text: this.__netSpeedText,
+        style_class: this.netSpeedLabelStyleClassName,
         y_align: Clutter.ActorAlign.CENTER,
       })
-      indicator.add_child(this._netSpeedLabel)
+      this.indicator.add_child(this._netSpeedLabel)
 
       // Add the indicator to the panel
-      Main.panel.addToStatusArea(this.uuid, indicator)
+      Main.panel.addToStatusArea(this.uuid, this.indicator)
 
-      indicator.menu.addAction(_('Preferences'), () => this.openPreferences())
+      this.indicator.menu.addAction(_('Preferences'), () =>
+        this.openPreferences()
+      )
     }
     return this._netSpeedLabel
   }
 
-  getIndicator() {
+  get indicator() {
     if (!this._indicator) {
       this._indicator = new PanelMenu.Button(0.0, this.metadata.name, false)
     }
@@ -168,32 +166,31 @@ export default class MinimalInternetSpeedMeter extends Extension {
 
   // Update current net speed to shell
   updateNetSpeed() {
-    let netSpeedLabel = this.getNetSpeedLabel()
     if (!this.prevDownloadBytes || !this.prevUploadBytes) {
-      let bytes = this.getNetBytes()
+      let bytes = this.netBytes
       this.prevDownloadBytes = bytes[0]
       this.prevUploadBytes = bytes[1]
     }
-    if (netSpeedLabel != null) {
+    if (this.netSpeedLabel != null) {
       try {
-        let bytes = this.getNetBytes()
+        let bytes = this.netBytes
         let downloadBytes = bytes[0]
         let uploadBytes = bytes[1]
 
         // Current upload speed
         let uploadSpeed =
           (uploadBytes - this.prevUploadBytes) /
-          this.getRefreshThresholdInSecond() /
+          this.refreshThresholdInSecond /
           this.unitBase
 
         // Current download speed
         let downloadSpeed =
           (downloadBytes - this.prevDownloadBytes) /
-          this.getRefreshThresholdInSecond() /
+          this.refreshThresholdInSecond /
           this.unitBase
 
         // Show upload + download = total speed on the shell
-        netSpeedLabel.set_text(
+        this.netSpeedLabel.set_text(
           this.getFormattedSpeed(uploadSpeed + downloadSpeed)
         )
 
@@ -206,10 +203,28 @@ export default class MinimalInternetSpeedMeter extends Extension {
           _('Can not fetch internet speed from "/proc/net/dev": %s'),
           e
         )
-        netSpeedLabel.set_text(this.getNetSpeedText0())
+        this.netSpeedLabel.set_text(this.__netSpeedText)
       }
     }
     return false
+  }
+
+  _getFormattedSpeed(speed, speed_unit) {
+    speed = speed.toFixed(this.float_scale).toString()
+    let split_speeds = speed.split('.')
+    let speed_int = split_speeds[0]
+    let speed_float = split_speeds[1]
+
+    if (speed_int.length < 4) {
+      speed_int = ' '.repeat(4 - speed_int.length) + speed_int
+    }
+    speed = speed_int + '.' + speed_float
+    if (!this.showBytePerSecondText) {
+      speed_unit = speed_unit.slice(0, -3)
+    }
+    speed = speed + speed_unit
+
+    return speed
   }
 
   // Format bytes to readable string
@@ -223,25 +238,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
     }
     let speed_unit = this.units[i]
 
-    return this.getFormattedSpeed0(speed, speed_unit)
-  }
-
-  getFormattedSpeed0(speed, speed_unit) {
-    speed = speed.toFixed(this.float_scale).toString()
-    let split_speeds = speed.split('.')
-    let speed_int = split_speeds[0]
-    let speed_float = split_speeds[1]
-
-    if (speed_int.length < 4) {
-      speed_int = ' '.repeat(4 - speed_int.length) + speed_int
-    }
-    speed = speed_int + '.' + speed_float
-    if (!this.getShowBytePerSecondText()) {
-      speed_unit = speed_unit.slice(0, -3)
-    }
-    speed = speed + speed_unit
-
-    return speed
+    return this._getFormattedSpeed(speed, speed_unit)
   }
 
   bindUpdateNetSpeed() {
@@ -251,44 +248,23 @@ export default class MinimalInternetSpeedMeter extends Extension {
     }
     this.timeoutId = GLib.timeout_add_seconds(
       GLib.PRIORITY_DEFAULT,
-      this.getRefreshThresholdInSecond(),
+      this.refreshThresholdInSecond,
       this.updateNetSpeed.bind(this)
     )
   }
 
-  delNetSpeedLabel() {
-    if (this._netSpeedLabel) {
-      this._netSpeedLabel.destroy()
-      this._netSpeedLabel = null
-    }
-  }
-
-  delIndicator() {
-    if (this._indicator != null) {
-      Main.panel._rightBox.remove_child(this._indicator)
-      this._indicator.destroy()
-      this._indicator = null
-    }
-  }
-
   delHandlerIds() {
     if (this._refreshThresholdInSecondHandlerId) {
-      global.settings.disconnect(this._refreshThresholdInSecondHandlerId)
-      this._refreshThresholdInSecondHandlerId = null
+      global.settings.disconnectObject(this.refreshThresholdInSecondHandlerId)
+      this.refreshThresholdInSecondHandlerId = null
     }
-    if (this._showBytePerSecondHandlerId) {
-      global.settings.disconnect(this._showBytePerSecondHandlerId)
-      this._showBytePerSecondHandlerId = null
+    if (this.showBytePerSecondHandlerId) {
+      global.settings.disconnectObject(this.showBytePerSecondHandlerId)
+      this.showBytePerSecondHandlerId = null
     }
     if (this._showBorderHandlerId) {
-      global.settings.disconnect(this._showBorderHandlerId)
-      this._showBorderHandlerId = null
-    }
-  }
-
-  delSettings() {
-    if (this._settings) {
-      this._settings = null
+      global.settings.disconnectObject(this.showBorderHandlerId)
+      this.showBorderHandlerId = null
     }
   }
 
@@ -297,10 +273,23 @@ export default class MinimalInternetSpeedMeter extends Extension {
       GLib.Source.remove(this.timeoutId)
       this.timeoutId = 0
     }
-    this.delNetSpeedLabel()
-    this.delIndicator()
+
+    if (this._netSpeedLabel) {
+      this._netSpeedLabel.destroy()
+      this._netSpeedLabel = null
+    }
+
+    if (this._indicator != null) {
+      Main.panel._rightBox.remove_child(this._indicator)
+      this._indicator.destroy()
+      this._indicator = null
+    }
+
     this.delHandlerIds()
-    this.delSettings()
+
+    if (this._settings) {
+      this._settings = null
+    }
   }
 
   enable() {
