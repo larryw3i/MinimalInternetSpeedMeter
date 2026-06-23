@@ -119,14 +119,16 @@ export default class MinimalInternetSpeedMeter extends Extension {
         'changed::refresh-threshold-in-second',
         () => {
           this.bindUpdateNetSpeed()
-        }
+        },
+        this
       )
 
       this._settings.connectObject(
         'changed::show-byte-per-second-text',
         () => {
           this.refreshSpeed()
-        }
+        },
+        this
       )
 
       this._settings.connectObject(
@@ -135,7 +137,8 @@ export default class MinimalInternetSpeedMeter extends Extension {
           this.netSpeedLabel.set_style_class_name(
             this.netSpeedLabelStyleClassName
           )
-        }
+        },
+        this
       )
     }
     return this._settings
