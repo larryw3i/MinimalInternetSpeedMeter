@@ -118,7 +118,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
       this._settings.connectObject(
         'changed::refresh-threshold-in-second',
         () => {
-          this.bindUpdateNetSpeed()
+          this.enable()
         },
         this
       )
@@ -246,7 +246,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
     return this._getFormattedSpeed(speed, speed_unit)
   }
 
-  bindUpdateNetSpeed() {
+  enable() {
     if (this.timeoutId != 0) {
       GLib.Source.remove(this.timeoutId)
       this.timeoutId = 0
@@ -258,7 +258,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
     )
   }
 
-  unbindUpdateNetSpeed() {
+  disable() {
     if (this.timeoutId != 0) {
       GLib.Source.remove(this.timeoutId)
       this.timeoutId = 0
@@ -274,19 +274,11 @@ export default class MinimalInternetSpeedMeter extends Extension {
       this._indicator = null
     }
 
-    global.settings.disconnectObject(this)
+    this.settings.disconnectObject(this)
 
     if (this._settings) {
       this._settings = null
     }
-  }
-
-  enable() {
-    this.bindUpdateNetSpeed()
-  }
-
-  disable() {
-    this.unbindUpdateNetSpeed()
   }
 }
 
