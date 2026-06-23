@@ -1,6 +1,6 @@
-# 1023.4K Crazy Internet Speed Meter
+# 1023.4K Minimal Internet Speed Meter
 
-A simple and minimal Internet Speed Meter extension for the Gnome Shell.
+A simple and minimal Internet Speed Meter extension for the Gnome Shell. It won't disturb your work, won't distract your attention, and won't take up too much space on your panel.
 
 To use this extension, you will need
 
@@ -44,5 +44,5 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 [GNU General Public License v3.0](LICENSE)
 
-Copyright © 2024 [larryw3i](https://github.com/larryw3i)  
+Copyright © 2024 - now [larryw3i](https://github.com/larryw3i)  
 Copyright © 2020 - 2024 [Al Shakib](https://alshakib.dev)
