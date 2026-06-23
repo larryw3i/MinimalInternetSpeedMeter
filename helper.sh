@@ -100,13 +100,6 @@ install_extension() {
     echo "${DEFAULT_PACK_FILE} installed."
 }
 
-compile_schemas() {
-    PWD0="${PWD}"
-    cd ${SRC_DIR}
-    glib-compile-schemas schemas/
-    cd ${PWD0}
-}
-
 update_pot() {
     echo "'xgettext' is extracting translatable strings. . ."
     version="${VERSION}"
@@ -150,8 +143,7 @@ pack_extension() {
         mv ${DEFAULT_PACK_FILE} ${extension_cp}
         echo "Finish moving."
     fi
-    # glib-compile-schemas ${SRC_DIR}/schemas/
-    compile_schemas
+
     gnome-extensions pack \
         --podir=${PWD}/po \
         -o ${OUT_DIR} \

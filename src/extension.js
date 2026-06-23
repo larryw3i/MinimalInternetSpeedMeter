@@ -33,15 +33,16 @@ export default class MinimalInternetSpeedMeter extends Extension {
   float_scale = 1
   prevUploadBytes = 0
   prevDownloadBytes = 0
-  prevSpeed = 0
   timeoutId = 0
+  prevSpeed = 0
 
   _netSpeedLabel = null
   _indicator = null
   _settings = null
+  _netInterfaces = null
 
   unitBase = 1024.0 // 1 GB == 1024MB or 1MB == 1024KB etc.
-  units = ['KB/s', 'MB/s', 'GB/s', 'TB/s', 'PB/s', 'EB/s']
+  units = ['KB/s', 'MB/s', 'GB/s', 'TB/s', 'PB/s', 'EB/s', '*B/s']
 
   constructor(metadata) {
     super(metadata)
@@ -60,7 +61,9 @@ export default class MinimalInternetSpeedMeter extends Extension {
   }
 
   get __netSpeedText() {
-    let char_count = 10
+    let char_count = 8
+    char_count =
+      this.float_scale > 0 ? char_count + 1 + this.float_scale : char_count
     if (!this.showBytePerSecondText) {
       char_count = char_count - 3
     }
@@ -77,39 +80,55 @@ export default class MinimalInternetSpeedMeter extends Extension {
     return className
   }
 
-  // Read total download and upload bytes from /proc/net/dev file
-  get netBytes() {
-    let lines = Shell.get_file_contents_utf8_sync('/proc/net/dev').split('\n')
-    let downloadBytes = 0
-    let uploadBytes = 0
-    for (let i = 0; i < lines.length; ++i) {
-      let column = lines[i].trim().split(/\W+/)
-      if (column.length <= 2) {
-        break
-      }
-      if (
-        !column[0].match(/^lo$/) &&
-        !column[0].match(/^br[0-9]+/) &&
-        !column[0].match(/^tun[0-9]+/) &&
-        !column[0].match(/^tap[0-9]+/) &&
-        !column[0].match(/^vnet[0-9]+/) &&
-        !column[0].match(/^virbr[0-9]+/) &&
-        !column[0].match(/^proton[0-9]+/) &&
-        !column[0].match(/^(veth|br-|docker0)[a-zA-Z0-9]+/)
-      ) {
-        let download = parseInt(column[1])
-        let upload = parseInt(column[9])
-        if (!isNaN(download) && !isNaN(upload)) {
-          downloadBytes += download
-          uploadBytes += upload
+  get netInterfaces() {
+    if (!this._netInterfaces) {
+      const ifaces = new Set()
+
+      // IPv4
+      const v4_route = Shell.get_file_contents_utf8_sync('/proc/net/route')
+      v4_route.split('\n').forEach((line) => {
+        const c = line.trim().split(/\s+/)
+        if (c[1] === '0'.repeat(8) && c[2] !== '0'.repeat(8)) {
+          ifaces.add(c[0])
         }
-      }
+      })
+
+      // IPv6
+      const v6_route = Shell.get_file_contents_utf8_sync('/proc/net/ipv6_route')
+      v6_route.split('\n').forEach((line) => {
+        const c = line.trim().split(/\s+/)
+        if (c[0] === '0'.repeat(32) && c[4] !== '0'.repeat(32)) {
+          ifaces.add(c[9])
+        }
+      })
+      this._netInterfaces = ifaces
     }
-    return [downloadBytes, uploadBytes]
+    return this._netInterfaces
   }
 
-  refreshSpeed() {
-    this.netSpeedLabel.set_text(this.getFormattedSpeed(this.prevSpeed))
+  // Read total download and upload bytes from /proc/net/dev file
+  get netBytes() {
+    const netDev = Shell.get_file_contents_utf8_sync('/proc/net/dev')
+    let downloadBytes = 0
+    let uploadBytes = 0
+
+    netDev.split('\n').forEach((line) => {
+      const match = line.match(/^(\S+):/)
+      if (!match) return
+
+      const iface = match[1]
+      if (!this.netInterfaces.has(iface)) return
+
+      const cols = line.trim().split(/\s+/)
+      const download = Number(cols[1])
+      const upload = Number(cols[9])
+
+      if (download >= 0 && upload >= 0) {
+        downloadBytes += download
+        uploadBytes += upload
+      }
+    })
+    return [downloadBytes, uploadBytes]
   }
 
   get settings() {
@@ -126,7 +145,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
       this._settings.connectObject(
         'changed::show-byte-per-second-text',
         () => {
-          this.refreshSpeed()
+          this.netSpeedLabel.set_text(this.getFormattedSpeed(this.prevSpeed))
         },
         this
       )
@@ -152,10 +171,6 @@ export default class MinimalInternetSpeedMeter extends Extension {
         y_align: Clutter.ActorAlign.CENTER,
       })
       this.indicator.add_child(this._netSpeedLabel)
-
-      // Add the indicator to the panel
-      Main.panel.addToStatusArea(this.uuid, this.indicator)
-
       this.indicator.menu.addAction(_('Preferences'), () =>
         this.openPreferences()
       )
@@ -166,23 +181,19 @@ export default class MinimalInternetSpeedMeter extends Extension {
   get indicator() {
     if (!this._indicator) {
       this._indicator = new PanelMenu.Button(0.0, this.metadata.name, false)
+      Main.panel.addToStatusArea(this.uuid, this._indicator)
     }
     return this._indicator
   }
 
   // Update current net speed to shell
   updateNetSpeed() {
-    if (!this.prevDownloadBytes || !this.prevUploadBytes) {
-      let bytes = this.netBytes
-      this.prevDownloadBytes = bytes[0]
-      this.prevUploadBytes = bytes[1]
-    }
-    if (this.netSpeedLabel != null) {
-      try {
-        let bytes = this.netBytes
-        let downloadBytes = bytes[0]
-        let uploadBytes = bytes[1]
+    try {
+      let netBytes = this.netBytes
+      let downloadBytes = netBytes[0]
+      let uploadBytes = netBytes[1]
 
+      if (this.prevDownloadBytes + this.prevUploadBytes > 0.0) {
         // Current upload speed
         let uploadSpeed =
           (uploadBytes - this.prevUploadBytes) /
@@ -199,18 +210,15 @@ export default class MinimalInternetSpeedMeter extends Extension {
         this.netSpeedLabel.set_text(
           this.getFormattedSpeed(uploadSpeed + downloadSpeed)
         )
-
-        this.prevUploadBytes = uploadBytes
-        this.prevDownloadBytes = downloadBytes
         this.prevSpeed = uploadSpeed + downloadSpeed
-        return true
-      } catch (e) {
-        console.log(
-          _('Can not fetch internet speed from "/proc/net/dev": %s'),
-          e
-        )
-        this.netSpeedLabel.set_text(this.__netSpeedText)
       }
+
+      this.prevUploadBytes = uploadBytes
+      this.prevDownloadBytes = downloadBytes
+      return true
+    } catch (e) {
+      console.log(_('Can not fetch internet speed from "/proc/net/dev": %s'), e)
+      this.netSpeedLabel.set_text(this.__netSpeedText)
     }
     return false
   }
@@ -235,12 +243,15 @@ export default class MinimalInternetSpeedMeter extends Extension {
 
   // Format bytes to readable string
   getFormattedSpeed(speed) {
+    speed = speed || 0
     let unit_index = 0
     while (speed >= this.unitBase) {
       // Convert speed to KB, MB, GB or TB
       speed /= this.unitBase
       ++unit_index
     }
+    unit_index =
+      unit_index >= this.units.length ? this.units.length - 1 : unit_index
     let speed_unit = this.units[unit_index]
 
     return this._getFormattedSpeed(speed, speed_unit)
@@ -255,6 +266,13 @@ export default class MinimalInternetSpeedMeter extends Extension {
       GLib.PRIORITY_DEFAULT,
       this.refreshThresholdInSecond,
       this.updateNetSpeed.bind(this)
+    )
+    Main.networkManager?.connectObject(
+      'notify::primary-connection',
+      () => {
+        this.netInterfaces = null
+      },
+      this
     )
   }
 
@@ -275,6 +293,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
     }
 
     this.settings.disconnectObject(this)
+    Main.networkManager?.disconnectObject(this)
 
     if (this._settings) {
       this._settings = null
