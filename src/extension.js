@@ -30,17 +30,18 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js'
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js'
 
 export default class MinimalInternetSpeedMeter extends Extension {
-  unitBase = 1024.0 // 1 GB == 1024MB or 1MB == 1024KB etc.
-  units = ['KB/s', 'MB/s', 'GB/s', 'TB/s', 'PB/s', 'EB/s']
-
   float_scale = 1
   prevUploadBytes = 0
   prevDownloadBytes = 0
   prevSpeed = 0
   timeoutId = 0
+
   _netSpeedLabel = null
   _indicator = null
   _settings = null
+
+  unitBase = 1024.0 // 1 GB == 1024MB or 1MB == 1024KB etc.
+  units = ['KB/s', 'MB/s', 'GB/s', 'TB/s', 'PB/s', 'EB/s']
 
   constructor(metadata) {
     super(metadata)
@@ -254,21 +255,6 @@ export default class MinimalInternetSpeedMeter extends Extension {
     )
   }
 
-  deleteHandlerIds() {
-    if (this.refreshThresholdInSecondHandlerId) {
-      global.settings.disconnectObject(this.refreshThresholdInSecondHandlerId)
-      this.refreshThresholdInSecondHandlerId = null
-    }
-    if (this.showBytePerSecondHandlerId) {
-      global.settings.disconnectObject(this.showBytePerSecondHandlerId)
-      this.showBytePerSecondHandlerId = null
-    }
-    if (this.showBorderHandlerId) {
-      global.settings.disconnectObject(this.showBorderHandlerId)
-      this.showBorderHandlerId = null
-    }
-  }
-
   unbindUpdateNetSpeed() {
     if (this.timeoutId != 0) {
       GLib.Source.remove(this.timeoutId)
@@ -286,7 +272,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
       this._indicator = null
     }
 
-    this.deleteHandlerIds()
+    global.settings.disconnectObject(this)
 
     if (this._settings) {
       this._settings = null
