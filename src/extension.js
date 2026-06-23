@@ -115,21 +115,21 @@ export default class MinimalInternetSpeedMeter extends Extension {
   get settings() {
     if (!this._settings) {
       this._settings = super.getSettings()
-      this.refreshThresholdInSecondHandlerId = this._settings.connectObject(
+      this._settings.connectObject(
         'changed::refresh-threshold-in-second',
         () => {
           this.bindUpdateNetSpeed()
         }
       )
 
-      this.showBytePerSecondHandlerId = this._settings.connectObject(
+      this._settings.connectObject(
         'changed::show-byte-per-second-text',
         () => {
           this.refreshSpeed()
         }
       )
 
-      this.showBorderHandlerId = this._settings.connectObject(
+      this._settings.connectObject(
         'changed::show-border',
         () => {
           this.netSpeedLabel.set_style_class_name(
@@ -267,7 +267,6 @@ export default class MinimalInternetSpeedMeter extends Extension {
     }
 
     if (this._indicator != null) {
-      Main.panel._rightBox.remove_child(this._indicator)
       this._indicator.destroy()
       this._indicator = null
     }
