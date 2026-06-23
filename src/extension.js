@@ -70,9 +70,9 @@ export default class MinimalInternetSpeedMeter extends Extension {
   }
 
   get netSpeedLabelStyleClassName() {
-    let className = 'netSpeedLabel'
+    let className = 'net-speed-label'
     if (this.showBorder) {
-      className += ' withBorder'
+      className += ' with-border'
     }
     return className
   }
