@@ -10,7 +10,7 @@ To use this extension, you will need
 
 ### Install from Gnome Extensions
 
-Visit [Minimal Internet Speed Meter - GNOME Shell Extensions](https://extensions.gnome.org/extension/6733/crazy-internet-speed-meter)
+Visit [Minimal Internet Speed Meter - GNOME Shell Extensions](https://extensions.gnome.org/extension/9505/minimal-internet-speed-meter)
 
 ### Install from source
 
