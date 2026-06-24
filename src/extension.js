@@ -29,6 +29,18 @@ import {
 import * as Main from 'resource:///org/gnome/shell/ui/main.js'
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js'
 
+const NM = 'org.freedesktop.NetworkManager'
+const NM_PATH = '/org/freedesktop/NetworkManager'
+const nm_proxy = Gio.DBusProxy.new_for_bus_sync(
+  Gio.BusType.SYSTEM,
+  Gio.DBusProxyFlags.NONE,
+  null,
+  NM,
+  NM_PATH,
+  NM,
+  null
+)
+
 export default class MinimalInternetSpeedMeter extends Extension {
   float_scale = 1
   prevUploadBytes = 0
@@ -61,13 +73,15 @@ export default class MinimalInternetSpeedMeter extends Extension {
   }
 
   get __netSpeedText() {
-    let char_count = 8
-    char_count =
-      this.float_scale > 0 ? char_count + 1 + this.float_scale : char_count
-    if (!this.showBytePerSecondText) {
-      char_count = char_count - 3
-    }
-    let __netSpeedText = ' '.repeat(char_count)
+    let __netSpeedText = '   0'
+    __netSpeedText =
+      this.float_scale > 0
+        ? __netSpeedText + '.' + '0'.repeat(this.float_scale)
+        : __netSpeedText
+    __netSpeedText += 'K'
+    __netSpeedText = this.showBytePerSecondText
+      ? __netSpeedText + 'B/s'
+      : __netSpeedText
 
     return __netSpeedText
   }
@@ -270,10 +284,11 @@ export default class MinimalInternetSpeedMeter extends Extension {
       this.refreshThresholdInSecond,
       this.updateNetSpeed.bind(this)
     )
-    Main.networkManager?.connectObject(
-      'notify::primary-connection',
+
+    nm_proxy.connectObject(
+      'g-properties-changed',
       () => {
-        this.netInterfaces = null
+        this._netInterfaces = null
       },
       this
     )
@@ -296,7 +311,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
     }
 
     this.settings.disconnectObject(this)
-    Main.networkManager?.disconnectObject(this)
+    nm_proxy.disconnectObject(this)
 
     if (this._settings) {
       this._settings = null
