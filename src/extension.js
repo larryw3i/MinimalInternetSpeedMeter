@@ -67,9 +67,9 @@ export default class MinimalInternetSpeedMeter extends Extension {
     if (!this.showBytePerSecondText) {
       char_count = char_count - 3
     }
-    let defaultNetSpeedText = ' '.repeat(char_count)
+    let __netSpeedText = ' '.repeat(char_count)
 
-    return defaultNetSpeedText
+    return __netSpeedText
   }
 
   get netSpeedLabelStyleClassName() {
@@ -192,8 +192,9 @@ export default class MinimalInternetSpeedMeter extends Extension {
       let netBytes = this.netBytes
       let downloadBytes = netBytes[0]
       let uploadBytes = netBytes[1]
+      let prevBytes = this.prevDownloadBytes + this.prevUploadBytes
 
-      if (this.prevDownloadBytes + this.prevUploadBytes > 0.0) {
+      if (0.0 < prevBytes && prevBytes <= downloadBytes + uploadBytes) {
         // Current upload speed
         let uploadSpeed =
           (uploadBytes - this.prevUploadBytes) /
@@ -211,6 +212,8 @@ export default class MinimalInternetSpeedMeter extends Extension {
           this.getFormattedSpeed(uploadSpeed + downloadSpeed)
         )
         this.prevSpeed = uploadSpeed + downloadSpeed
+      } else {
+        this.netSpeedLabel.set_text(this.__netSpeedText)
       }
 
       this.prevUploadBytes = uploadBytes
