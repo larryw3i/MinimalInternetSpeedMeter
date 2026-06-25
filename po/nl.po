@@ -8,13 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CrazyInternetSpeedMeter \"20240201.1654\"\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-24 03:08+0800\n"
+"POT-Creation-Date: 2026-06-26 01:11+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Preferences"
@@ -24,10 +24,7 @@ msgstr ""
 msgid "Can not fetch internet speed from \"/proc/net/dev\": %s"
 msgstr ""
 
-msgid "Crazy Internet Speed Meter"
-msgstr ""
-
-msgid "Internet Speed Meter"
+msgid "Minimal Internet Speed Meter"
 msgstr ""
 
 msgid "General"
@@ -37,30 +34,7 @@ msgid "Appearance"
 msgstr ""
 
 #, javascript-format
-msgid "Configure the appearance of %s."
-msgstr ""
-
-msgid "Internet speed char"
-msgstr ""
-
-msgid "Select the icon to display next to the text."
-msgstr ""
-
-msgid ""
-"To fix the size of this extension, only some Mono characters are available "
-"here. (Changing the size will distract your attention)"
-msgstr ""
-
-msgid "Show right char"
-msgstr ""
-
-msgid "Whether to show speed text with right char."
-msgstr ""
-
-msgid "Show left char"
-msgstr ""
-
-msgid "Whether to show speed text with left char."
+msgid "Configure the appearance of %1$s."
 msgstr ""
 
 msgid "Show \"B/s\" text"
@@ -79,4 +53,8 @@ msgid "Show border"
 msgstr ""
 
 msgid "Whether to show border."
+msgstr ""
+
+#, javascript-format
+msgid "v%1$s"
 msgstr ""

@@ -2,22 +2,22 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# larryw3i <larryw3i@163.com>, 2024.
+# larryw3i <larryw3i@163.com>, 2024-2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: CrazyInternetSpeedMeter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-24 03:08+0800\n"
-"PO-Revision-Date: 2024-12-24 03:09+0800\n"
+"POT-Creation-Date: 2026-06-26 01:11+0800\n"
+"PO-Revision-Date: 2026-06-26 01:12+0800\n"
 "Last-Translator: larryw3i <larryw3i@163.com>\n"
-"Language-Team: Chinese - China <larryw3i@163.com>\n"
-"Language: zh_CN\n"
+"Language-Team: zh_Hans_CN <larryw3i@163.com>\n"
+"Language: zh_Hans_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Gtranslator 47.0\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Gtranslator 50.0\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Preferences"
 msgstr "自定义"
@@ -26,11 +26,8 @@ msgstr "自定义"
 msgid "Can not fetch internet speed from \"/proc/net/dev\": %s"
 msgstr "无法从 “/proc/net/dev” 获取网络速度：%s"
 
-msgid "Crazy Internet Speed Meter"
-msgstr "网速表盘"
-
-msgid "Internet Speed Meter"
-msgstr "网速表盘"
+msgid "Minimal Internet Speed Meter"
+msgstr "迷你网速表盘"
 
 msgid "General"
 msgstr "常用"
@@ -39,33 +36,8 @@ msgid "Appearance"
 msgstr "显示"
 
 #, javascript-format
-msgid "Configure the appearance of %s."
-msgstr "配置 %s 的显示内容。"
-
-msgid "Internet speed char"
-msgstr "网速符号"
-
-msgid "Select the icon to display next to the text."
-msgstr "选择网速图标。"
-
-msgid ""
-"To fix the size of this extension, only some Mono characters are available "
-"here. (Changing the size will distract your attention)"
-msgstr ""
-"为了固定当前扩展的尺寸，此处仅有一些等宽字符供选择。（尺寸改变会分散你的注意"
-"力，不利于你专注）"
-
-msgid "Show right char"
-msgstr "显示右符号"
-
-msgid "Whether to show speed text with right char."
-msgstr "是否显示左符号。"
-
-msgid "Show left char"
-msgstr "显示左符号"
-
-msgid "Whether to show speed text with left char."
-msgstr "是否显示左符号。"
+msgid "Configure the appearance of %1$s."
+msgstr "配置 %1$s 的显示内容。"
 
 msgid "Show \"B/s\" text"
 msgstr "显示 “B/s”"
@@ -84,6 +56,38 @@ msgstr "显示边框"
 
 msgid "Whether to show border."
 msgstr "是否显示边框。"
+
+#, javascript-format
+msgid "v%1$s"
+msgstr "版本 %1$s"
+
+#~ msgid "Crazy Internet Speed Meter"
+#~ msgstr "网速表盘"
+
+#~ msgid "Internet speed char"
+#~ msgstr "网速符号"
+
+#~ msgid "Select the icon to display next to the text."
+#~ msgstr "选择网速图标。"
+
+#~ msgid ""
+#~ "To fix the size of this extension, only some Mono characters are "
+#~ "available here. (Changing the size will distract your attention)"
+#~ msgstr ""
+#~ "为了固定当前扩展的尺寸，此处仅有一些等宽字符供选择。（尺寸改变会分散你的注"
+#~ "意力，不利于你专注）"
+
+#~ msgid "Show right char"
+#~ msgstr "显示右符号"
+
+#~ msgid "Whether to show speed text with right char."
+#~ msgstr "是否显示左符号。"
+
+#~ msgid "Show left char"
+#~ msgstr "显示左符号"
+
+#~ msgid "Whether to show speed text with left char."
+#~ msgstr "是否显示左符号。"
 
 #~ msgid "Whether to show right speed text with arrow."
 #~ msgstr "是否显示右箭头。"

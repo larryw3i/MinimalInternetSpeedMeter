@@ -34,7 +34,7 @@ export default class MinimalInternetSpeedMeterPreferences extends ExtensionPrefe
 
     const group = new Adw.PreferencesGroup({
       title: _('Appearance'),
-      description: _('Configure the appearance of %s.').format(
+      description: _('Configure the appearance of %1$s.').format(
         this.petNameWithSpace_T
       ),
     })
@@ -81,6 +81,15 @@ export default class MinimalInternetSpeedMeterPreferences extends ExtensionPrefe
       'active',
       Gio.SettingsBindFlags.DEFAULT
     )
+    const versionLabel = new Gtk.Label({
+      label: _('v%1$s').format(this.metadata['version-name']),
+      halign: Gtk.Align.CENTER,
+      hexpand: true,
+      margin_top: 12,
+      margin_bottom: 12,
+      sensitive: false,
+    })
+    group.add(versionLabel)
   }
 }
 

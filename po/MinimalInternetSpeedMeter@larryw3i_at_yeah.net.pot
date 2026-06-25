@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the CrazyInternetSpeedMeter package.
+# This file is distributed under the same license as the MinimalInternetSpeedMeter package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: CrazyInternetSpeedMeter \"20241223.190127\"\n"
+"Project-Id-Version: MinimalInternetSpeedMeter \"20260625.171126\"\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-24 03:08+0800\n"
+"POT-Creation-Date: 2026-06-26 01:11+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,86 +17,57 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/extension.js:167
+#: src/extension.js:188
 msgid "Preferences"
 msgstr ""
 
-#: src/extension.js:221
+#: src/extension.js:237
 #, javascript-format
 msgid "Can not fetch internet speed from \"/proc/net/dev\": %s"
 msgstr ""
 
-#: src/prefs.js:25
-msgid "Crazy Internet Speed Meter"
+#: src/prefs.js:21
+msgid "Minimal Internet Speed Meter"
 msgstr ""
 
-#: src/prefs.js:26
-msgid "Internet Speed Meter"
-msgstr ""
-
-#: src/prefs.js:35
+#: src/prefs.js:30
 msgid "General"
 msgstr ""
 
-#: src/prefs.js:41
+#: src/prefs.js:36
 msgid "Appearance"
 msgstr ""
 
-#: src/prefs.js:42
+#: src/prefs.js:37
 #, javascript-format
-msgid "Configure the appearance of %s."
+msgid "Configure the appearance of %1$s."
 msgstr ""
 
-#: src/prefs.js:69
-msgid "Internet speed char"
-msgstr ""
-
-#: src/prefs.js:70
-msgid "Select the icon to display next to the text."
-msgstr ""
-
-#: src/prefs.js:83
-msgid ""
-"To fix the size of this extension, only some Mono characters are available "
-"here. (Changing the size will distract your attention)"
-msgstr ""
-
-#: src/prefs.js:90
-msgid "Show right char"
-msgstr ""
-
-#: src/prefs.js:91
-msgid "Whether to show speed text with right char."
-msgstr ""
-
-#: src/prefs.js:101
-msgid "Show left char"
-msgstr ""
-
-#: src/prefs.js:102
-msgid "Whether to show speed text with left char."
-msgstr ""
-
-#: src/prefs.js:113
+#: src/prefs.js:44
 msgid "Show \"B/s\" text"
 msgstr ""
 
-#: src/prefs.js:114
+#: src/prefs.js:45
 msgid "Whether to show \"B/s\" text."
 msgstr ""
 
-#: src/prefs.js:125
+#: src/prefs.js:56
 msgid "Refresh threshold (in second)"
 msgstr ""
 
-#: src/prefs.js:127
+#: src/prefs.js:57
 msgid "Refresh the network traffic speed after specific time."
 msgstr ""
 
-#: src/prefs.js:145
+#: src/prefs.js:74
 msgid "Show border"
 msgstr ""
 
-#: src/prefs.js:146
+#: src/prefs.js:75
 msgid "Whether to show border."
+msgstr ""
+
+#: src/prefs.js:85
+#, javascript-format
+msgid "v%1$s"
 msgstr ""

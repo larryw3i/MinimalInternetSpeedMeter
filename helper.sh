@@ -1,16 +1,16 @@
 #!/usr/bin/bash
 
-METADATA_FILE="${PWD}/src/metadata.json"
-EXTENSION_FULL_NAME=$( jq .uuid ${METADATA_FILE} | tail -c+2 | head -c -2 )
-EXTENSION_NAME=$( echo ${EXTENSION_FULL_NAME} | cut -d '@' -f1 )
-VERSION=$( jq ".\"version-name\"" ${METADATA_FILE} )
 PROJECT_DIR="${PWD}"
 SRC_DIR="${PWD}/src"
 OUT_DIR="${PWD}/out"
 TEMP_DIR="${PWD}/tmp"
+METADATA_FILE="${PWD}/src/metadata.json"
+EXTENSION_FULL_NAME=$( jq .uuid ${METADATA_FILE} | tail -c+2 | head -c -2 )
+EXTENSION_NAME=$( echo ${EXTENSION_FULL_NAME} | cut -d '@' -f1 )
+VERSION=$( jq ".\"version-name\"" ${METADATA_FILE} )
 MAINTAINER_EMAIL="larryw3i_at_yeah.net"
 MAINTAINER_NAME="larryw3i"
-EXTENSION_REPO_URL="https://github.com/larryw3i/MinimalInternetSpeedMeter https://github.com/larryw3i/MinimalInternetSpeedMeter"
+EXTENSION_REPO_URL="https://gitlab.gnome.org/larryw3i/MinimalInternetSpeedMeter https://github.com/larryw3i/MinimalInternetSpeedMeter"
 POT_FILE="${PWD}/po/${EXTENSION_FULL_NAME}.pot"
 GSCHEMA_PATH="${SRC_DIR}/schemas/org.gnome.shell.extensions.MinimalInternetSpeedMeter.gschema.xml"
 DEFAULT_PACK_NAME="${EXTENSION_FULL_NAME}.shell-extension.zip"
@@ -77,13 +77,15 @@ debug_extension() {
 }
 
 install_extension() {
-    pack_extension
+    pack_extension "$@"
     echo "Install ${DEFAULT_PACK_FILE}. . ."
     gnome-extensions \
         install \
         --force \
         ${DEFAULT_PACK_FILE}
     echo "${DEFAULT_PACK_FILE} installed."
+    gnome-extensions disable "${EXTENSION_FULL_NAME}"
+    gnome-extensions enable "${EXTENSION_FULL_NAME}"
 }
 
 update_pot() {
@@ -134,10 +136,13 @@ pack_extension() {
         --podir=${PWD}/po \
         -o ${OUT_DIR} \
         ${SRC_DIR}
-    
-    record_release_hash
+
+    if echo "$@" | grep -q -P "\B--write-hash\b"; then
+        record_release_hash
+    fi
 
     echo "Finish packing."
+    echo "The new version is ${VERSION} ."
 }
 
 format_code() {
@@ -176,18 +181,19 @@ format_code() {
     run_xmllint
 }
 
+func="$1"
+shift
 # Let's start
-if [[ "${1}" == "-b" ]]; then
+if [[ "${func}" == "-b" ]]; then
     # build
-    pack_extension
-elif [[ "${1}" == "-i" ]]; then
-    # pack_extension
-    install_extension
+    pack_extension "$@"
+elif [[ "${func}" == "-i" ]]; then
     # install
-elif [[ "${1}" == "-d" ]]; then
-    debug_extension
+    install_extension "$@"
+elif [[ "${func}" == "-d" ]]; then
+    debug_extension "$@"
 else
-    ${1}
+    $func "$@"
 fi
 
 # The end.
