@@ -1,23 +1,9 @@
 #!/usr/bin/bash
 
 METADATA_FILE="${PWD}/src/metadata.json"
-EXTENSION_FULL_NAME=$(
-    jq \
-        .uuid \
-        ${METADATA_FILE} |
-        tail -c+2 |
-        head -c-2
-)
-EXTENSION_NAME=$(
-    echo ${EXTENSION_FULL_NAME} |
-        cut \
-            -d '@' \
-            -f1
-)
-VERSION=$(
-    jq ".\"version-name\"" \
-        ${METADATA_FILE}
-)
+EXTENSION_FULL_NAME=$( jq .uuid ${METADATA_FILE} | tail -c+2 | head -c -2 )
+EXTENSION_NAME=$( echo ${EXTENSION_FULL_NAME} | cut -d '@' -f1 )
+VERSION=$( jq ".\"version-name\"" ${METADATA_FILE} )
 PROJECT_DIR="${PWD}"
 SRC_DIR="${PWD}/src"
 OUT_DIR="${PWD}/out"
