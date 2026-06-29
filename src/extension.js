@@ -46,7 +46,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
   prevUploadBytes = 0
   prevDownloadBytes = 0
   timeoutId = 0
-  prevSpeed = 0
+  currentSpeed = 0
 
   _netSpeedLabel = null
   _indicator = null
@@ -159,7 +159,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
       this._settings.connectObject(
         'changed::show-byte-per-second-text',
         () => {
-          this.netSpeedLabel.set_text(this.getFormattedSpeed(this.prevSpeed))
+          this.netSpeedLabel.set_text(this.getFormattedSpeed(this.currentSpeed))
         },
         this
       )
@@ -225,7 +225,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
         this.netSpeedLabel.set_text(
           this.getFormattedSpeed(uploadSpeed + downloadSpeed)
         )
-        this.prevSpeed = uploadSpeed + downloadSpeed
+        this.currentSpeed = uploadSpeed + downloadSpeed
       } else {
         this.netSpeedLabel.set_text(this.__netSpeedText)
       }
@@ -312,6 +312,9 @@ export default class MinimalInternetSpeedMeter extends Extension {
 
     this.settings.disconnectObject(this)
     nm_proxy.disconnectObject(this)
+    this.prevDownloadBytes = 0
+    this.prevUploadBytes = 0
+    this.currentSpeed = 0
 
     if (this._settings) {
       this._settings = null
