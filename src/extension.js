@@ -301,7 +301,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
       this.timeoutId = 0
     }
 
-    if (this._netSpeedLabel!=null) {
+    if (this._netSpeedLabel != null) {
       this._netSpeedLabel.destroy()
       this._netSpeedLabel = null
     }
