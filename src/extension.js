@@ -29,9 +29,6 @@ import {
 import * as Main from 'resource:///org/gnome/shell/ui/main.js'
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js'
 
-const NM = 'org.freedesktop.NetworkManager'
-const NM_PATH = '/org/freedesktop/NetworkManager'
-
 export default class MinimalInternetSpeedMeter extends Extension {
   float_scale = 1
   prevUploadBytes = 0
@@ -39,6 +36,8 @@ export default class MinimalInternetSpeedMeter extends Extension {
   timeoutId = 0
   currentSpeed = 0
   nm_proxy = null
+  NM = 'org.freedesktop.NetworkManager'
+  NM_PATH = '/org/freedesktop/NetworkManager'
 
   _netSpeedLabel = null
   _indicator = null
@@ -281,9 +280,9 @@ export default class MinimalInternetSpeedMeter extends Extension {
       Gio.BusType.SYSTEM,
       Gio.DBusProxyFlags.NONE,
       null,
-      NM,
-      NM_PATH,
-      NM,
+      this.NM,
+      this.NM_PATH,
+      this.NM,
       null
     )
     this.nm_proxy.connectObject(
@@ -313,6 +312,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
 
     this.settings.disconnectObject(this)
     this.nm_proxy.disconnectObject(this)
+    this.nm_proxy = null
     this.prevDownloadBytes = 0
     this.prevUploadBytes = 0
     this.currentSpeed = 0
