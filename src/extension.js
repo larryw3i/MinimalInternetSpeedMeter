@@ -31,15 +31,6 @@ import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js'
 
 const NM = 'org.freedesktop.NetworkManager'
 const NM_PATH = '/org/freedesktop/NetworkManager'
-const nm_proxy = Gio.DBusProxy.new_for_bus_sync(
-  Gio.BusType.SYSTEM,
-  Gio.DBusProxyFlags.NONE,
-  null,
-  NM,
-  NM_PATH,
-  NM,
-  null
-)
 
 export default class MinimalInternetSpeedMeter extends Extension {
   float_scale = 1
@@ -47,6 +38,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
   prevDownloadBytes = 0
   timeoutId = 0
   currentSpeed = 0
+  nm_proxy = null
 
   _netSpeedLabel = null
   _indicator = null
@@ -285,7 +277,16 @@ export default class MinimalInternetSpeedMeter extends Extension {
       this.updateNetSpeed.bind(this)
     )
 
-    nm_proxy.connectObject(
+    this.nm_proxy = Gio.DBusProxy.new_for_bus_sync(
+      Gio.BusType.SYSTEM,
+      Gio.DBusProxyFlags.NONE,
+      null,
+      NM,
+      NM_PATH,
+      NM,
+      null
+    )
+    this.nm_proxy.connectObject(
       'g-properties-changed',
       () => {
         this._netInterfaces = null
@@ -300,7 +301,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
       this.timeoutId = 0
     }
 
-    if (this._netSpeedLabel) {
+    if (this._netSpeedLabel!=null) {
       this._netSpeedLabel.destroy()
       this._netSpeedLabel = null
     }
@@ -311,7 +312,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
     }
 
     this.settings.disconnectObject(this)
-    nm_proxy.disconnectObject(this)
+    this.nm_proxy.disconnectObject(this)
     this.prevDownloadBytes = 0
     this.prevUploadBytes = 0
     this.currentSpeed = 0
