@@ -84,8 +84,7 @@ install_extension() {
         --force \
         ${DEFAULT_PACK_FILE}
     echo "${DEFAULT_PACK_FILE} installed."
-    gnome-extensions disable "${EXTENSION_FULL_NAME}"
-    gnome-extensions enable "${EXTENSION_FULL_NAME}"
+    echo "Please consider logging in GNOME again for the installation to take effect."
 }
 
 update_pot() {
