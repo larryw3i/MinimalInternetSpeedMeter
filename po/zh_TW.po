@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CrazyInternetSpeedMeter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-30 07:08+0800\n"
+"POT-Creation-Date: 2026-07-11 19:14+0800\n"
 "PO-Revision-Date: 2024-01-30 21:01+0800\n"
 "Last-Translator: larryw3i <larryw3i@163.com>\n"
 "Language-Team: Default larryw3i@163.com\n"
@@ -20,8 +20,7 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
-#, javascript-format
-msgid "Can not fetch internet speed from \"/proc/net/dev\": %s"
+msgid "Can not fetch internet speed from \"/proc/net/dev\"."
 msgstr ""
 
 msgid "Minimal Internet Speed Meter"
