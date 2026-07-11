@@ -225,7 +225,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
       this.prevDownloadBytes = downloadBytes
       return true
     } catch (e) {
-      logError(e, _('Can not fetch internet speed from "/proc/net/dev": %s'))
+      console.error(e, _('Can not fetch internet speed from "/proc/net/dev".'))
       this.netSpeedLabel.set_text(this.__netSpeedText)
     }
     return false
