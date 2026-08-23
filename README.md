@@ -32,7 +32,7 @@ Visit [Minimal Internet Speed Meter - GNOME Shell Extensions](https://extensions
    chmod +x ./helper.sh && ./helper.sh -i
    ```
 
-4. If you are using Wayland, log out and then log in. Otherwise press `ALT + F2` and then type `r` and press `Enter`.
+4. If you are using Wayland, Login again to make this extension run.
 
 5. Enable **Minimal Internet Speed Meter** from the [Extension Manager](https://github.com/mjakeman/extension-manager)
 
