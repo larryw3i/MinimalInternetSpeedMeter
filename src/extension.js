@@ -136,13 +136,31 @@ export default class MinimalInternetSpeedMeter extends Extension {
     return [downloadBytes, uploadBytes]
   }
 
+  resetRefreshThreshold() {
+    if (this.timeoutId != 0) {
+      GLib.Source.remove(this.timeoutId)
+      this.timeoutId = 0
+    }
+
+    let netSpeedLabel = this.netSpeedLabel
+    if (!netSpeedLabel) {
+      return
+    }
+
+    this.timeoutId = GLib.timeout_add_seconds(
+      GLib.PRIORITY_DEFAULT,
+      this.refreshThresholdInSecond,
+      this.updateNetSpeed.bind(this)
+    )
+  }
+
   get settings() {
     if (!this._settings) {
       this._settings = super.getSettings()
       this._settings.connectObject(
         'changed::refresh-threshold-in-second',
         () => {
-          this.enable()
+          this.resetRefreshThreshold()
         },
         this
       )
@@ -193,6 +211,10 @@ export default class MinimalInternetSpeedMeter extends Extension {
 
   // Update current net speed to shell
   updateNetSpeed() {
+    let netSpeedLabel = this.netSpeedLabel
+    if (!netSpeedLabel) {
+      return
+    }
     try {
       let netBytes = this.netBytes
       let downloadBytes = netBytes[0]
@@ -213,12 +235,12 @@ export default class MinimalInternetSpeedMeter extends Extension {
           this.unitBase
 
         // Show upload + download = total speed on the shell
-        this.netSpeedLabel.set_text(
+        netSpeedLabel.set_text(
           this.getFormattedSpeed(uploadSpeed + downloadSpeed)
         )
         this.currentSpeed = uploadSpeed + downloadSpeed
       } else {
-        this.netSpeedLabel.set_text(this.__netSpeedText)
+        netSpeedLabel.set_text(this.__netSpeedText)
       }
 
       this.prevUploadBytes = uploadBytes
@@ -226,7 +248,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
       return true
     } catch (e) {
       console.error(e, _('Can not fetch internet speed from "/proc/net/dev".'))
-      this.netSpeedLabel.set_text(this.__netSpeedText)
+      netSpeedLabel.set_text(this.__netSpeedText)
     }
     return false
   }
@@ -266,15 +288,7 @@ export default class MinimalInternetSpeedMeter extends Extension {
   }
 
   enable() {
-    if (this.timeoutId != 0) {
-      GLib.Source.remove(this.timeoutId)
-      this.timeoutId = 0
-    }
-    this.timeoutId = GLib.timeout_add_seconds(
-      GLib.PRIORITY_DEFAULT,
-      this.refreshThresholdInSecond,
-      this.updateNetSpeed.bind(this)
-    )
+    this.resetRefreshThreshold()
 
     this.nm_proxy = Gio.DBusProxy.new_for_bus_sync(
       Gio.BusType.SYSTEM,
